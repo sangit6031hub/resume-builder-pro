@@ -1,0 +1,4 @@
+- **Languages:** Python, JavaScript, SQL
+- **Cloud & Platforms:** AWS, Docker, Linux
+- **Engineering:** REST APIs, event-driven systems, CI/CD, automated testing
+- **Tools:** Git, GitHub Actions, PostgreSQL

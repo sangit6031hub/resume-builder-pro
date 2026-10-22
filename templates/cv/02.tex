@@ -1,0 +1,56 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[letterpaper,margin=0.65in]{geometry}
+\usepackage{fontspec}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\IfFontExistsTF{TeX Gyre Pagella}{\setmainfont{TeX Gyre Pagella}}{\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{lmroman10-regular.otf}}}
+\providecommand{\tightlist}{%
+	\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\definecolor{ink}{HTML}{263238}
+\definecolor{accent}{HTML}{0E7490}
+\definecolor{rule}{HTML}{9CC8D1}
+\definecolor{header}{HTML}{12343B}
+\color{ink}
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=accent,pdfcreator={},pdfproducer={}}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlist[itemize]{leftmargin=1.35em,itemsep=2pt,topsep=3pt,parsep=0pt}
+\titleformat{\section}{\large\scshape\bfseries\color{accent}}{}{0pt}{}[\vspace{-3pt}{\color{rule}\rule{\linewidth}{1.8pt}}]
+\titleformat{\subsection}{\normalsize\bfseries\color{header}}{}{0pt}{}
+\titleformat{\subsubsection}{\small\bfseries\color{header}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{14pt}{5pt}
+\titlespacing*{\subsection}{0pt}{6pt}{4pt}
+\titlespacing*{\subsubsection}{0pt}{5pt}{2pt}
+\pagestyle{empty}
+\begin{document}
+$if(certification_logo_images)$
+\noindent
+\begin{minipage}[t]{0.80\linewidth}
+\centering
+{\fontsize{27}{30}\selectfont\color{header}\bfseries $name$}\\[2pt]
+{\large\color{accent}\scshape $if(linkedin)$\href{$linkedin$}{$title$}$else$$title$$endif$}\par
+\vspace{3pt}{\small $location$ \quad | \quad $phone$ \quad | \quad \href{mailto:$email$}{$email$} $if(linkedin)$\quad | \quad \href{$linkedin$}{LinkedIn}$endif$$if(website)$ \quad | \quad \href{$website$}{Website}$endif$$if(credly)$ \quad | \quad \href{$credly$}{Credly}$endif$}
+\end{minipage}
+\hfill\begin{minipage}[t]{0.18\linewidth}
+\raggedleft
+$for(certification_logo_images)$
+$if(certification_logo_images.image)$$if(credly)$\href{$credly$}{\includegraphics[width=0.95cm,height=0.95cm,keepaspectratio]{\detokenize{$certification_logo_images.image$}}}$else$\includegraphics[width=0.95cm,height=0.95cm,keepaspectratio]{\detokenize{$certification_logo_images.image$}}$endif$\hspace{3pt}$endif$
+$endfor$
+\end{minipage}
+$else$
+\begin{center}
+{\fontsize{27}{30}\selectfont\color{header}\bfseries $name$}\\[2pt]
+{\large\color{accent}\scshape $if(linkedin)$\href{$linkedin$}{$title$}$else$$title$$endif$}\par
+\vspace{3pt}{\small $location$ \quad | \quad $phone$ \quad | \quad \href{mailto:$email$}{$email$} $if(linkedin)$\quad | \quad \href{$linkedin$}{LinkedIn}$endif$$if(website)$ \quad | \quad \href{$website$}{Website}$endif$$if(credly)$ \quad | \quad \href{$credly$}{Credly}$endif$}
+\end{center}
+$endif$
+\par
+\vspace{-4pt}{\color{rule}\hrule height 1.4pt}
+$body$
+\end{document}

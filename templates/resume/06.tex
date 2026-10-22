@@ -1,0 +1,80 @@
+\documentclass[9pt,letterpaper]{extarticle}
+\usepackage[letterpaper,left=0.40in,right=0.40in,top=0.45in,bottom=0.45in,columnsep=0.22in]{geometry}
+\usepackage{fontspec}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{microtype}
+\usepackage{paracol}
+\IfFontExistsTF{Lato}{\setmainfont{Lato}}{\IfFontExistsTF{TeX Gyre Heros}{\setmainfont{TeX Gyre Heros}}{\setmainfont{lmroman10-regular.otf}}}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{666666}
+\definecolor{DarkPastelRed}{HTML}{450808}
+\definecolor{PastelRed}{HTML}{8F0D0D}
+\definecolor{GoldenEarth}{HTML}{E7D192}
+\color{SlateGrey}
+\hypersetup{colorlinks=true,urlcolor=PastelRed,linkcolor=PastelRed,pdfcreator={},pdfproducer={}}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlist[itemize]{leftmargin=1.05em,itemsep=0.15pt,topsep=0.5pt,parsep=0pt}
+\setlength{\columnsep}{0.22in}
+\columnratio{0.71}
+\titleformat{\section}{\normalsize\bfseries\color{DarkPastelRed}}{}{0pt}{\MakeUppercase}[\vspace{-3pt}{\color{GoldenEarth}\rule{\linewidth}{0.9pt}}]
+\titleformat{\subsection}{\small\bfseries\color{PastelRed}}{}{0pt}{}
+\titleformat{\subsubsection}{\small\bfseries\color{DarkPastelRed}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titlespacing*{\subsection}{0pt}{3pt}{1pt}
+\titlespacing*{\subsubsection}{0pt}{2pt}{0pt}
+\newcommand{\resumeheader}{%
+  $if(certification_logo_images)$
+  \noindent
+  \begin{minipage}[t]{0.80\linewidth}
+  \centering
+  {\fontsize{19}{21}\selectfont\bfseries\color{DarkPastelRed} $name$}\\[-1pt]
+  {\footnotesize\bfseries\color{PastelRed} $if(linkedin)$\href{$linkedin$}{$title$}$else$$title$$endif$}\\[-1pt]
+  {\scriptsize\color{LightGrey} $location$ \ | \ $phone$ \ | \ \href{mailto:$email$}{$email$} $if(linkedin)$\ | \ \href{$linkedin$}{LinkedIn}$endif$$if(website)$ \ | \ \href{$website$}{Website}$endif$$if(credly)$ \ | \ \href{$credly$}{Credly}$endif$}
+  \end{minipage}
+  \hfill\begin{minipage}[t]{0.18\linewidth}
+  \raggedleft
+  $for(certification_logo_images)$
+  $if(certification_logo_images.image)$$if(credly)$\href{$credly$}{\includegraphics[width=0.75cm,height=0.75cm,keepaspectratio]{\detokenize{$certification_logo_images.image$}}}$else$\includegraphics[width=0.75cm,height=0.75cm,keepaspectratio]{\detokenize{$certification_logo_images.image$}}$endif$\hspace{2pt}$endif$
+  $endfor$
+  \end{minipage}
+  $else$
+  \begin{center}
+  {\fontsize{19}{21}\selectfont\bfseries\color{DarkPastelRed} $name$}\\[-1pt]
+  {\footnotesize\bfseries\color{PastelRed} $if(linkedin)$\href{$linkedin$}{$title$}$else$$title$$endif$}\\[-1pt]
+  {\scriptsize\color{LightGrey} $location$ \ | \ $phone$ \ | \ \href{mailto:$email$}{$email$} $if(linkedin)$\ | \ \href{$linkedin$}{LinkedIn}$endif$$if(website)$ \ | \ \href{$website$}{Website}$endif$$if(credly)$ \ | \ \href{$credly$}{Credly}$endif$}
+  \end{center}
+  $endif$
+  \par\vspace{-2pt}
+  {\color{GoldenEarth}\rule{\linewidth}{1.1pt}}\vspace{1pt}
+}
+\begin{document}
+\pagestyle{empty}
+\resumeheader
+$if(right_body)$
+\begin{paracol}{2}
+\switchcolumn
+\footnotesize
+$right_body$
+\switchcolumn
+$if(left_body)$
+$left_body$
+$else$
+$body$
+$endif$
+\end{paracol}
+$else$
+$if(left_body)$
+$left_body$
+$else$
+$body$
+$endif$
+$endif$
+\end{document}
