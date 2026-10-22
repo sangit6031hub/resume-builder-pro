@@ -1,0 +1,56 @@
+\documentclass[9pt,letterpaper]{extarticle}
+\usepackage[letterpaper,margin=0.48in]{geometry}
+\usepackage{fontspec}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\IfFontExistsTF{TeX Gyre Heros}{\setmainfont{TeX Gyre Heros}}{\IfFontExistsTF{Arial}{\setmainfont{Arial}}{\setmainfont{lmroman10-regular.otf}}}
+\providecommand{\tightlist}{%
+	\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\definecolor{ink}{HTML}{1F2933}
+\definecolor{accent}{HTML}{B45309}
+\definecolor{rule}{HTML}{E5B97A}
+\definecolor{darkaccent}{HTML}{78350F}
+\color{ink}
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=accent,pdfcreator={},pdfproducer={}}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlist[itemize]{leftmargin=1.2em,itemsep=0.5pt,topsep=1pt,parsep=0pt}
+\titleformat{\section}{\normalsize\bfseries\color{accent}}{}{0pt}{\MakeUppercase}[\vspace{-2pt}{\color{rule}\rule{\linewidth}{1.4pt}}]
+\titleformat{\subsection}{\small\bfseries\color{darkaccent}}{}{0pt}{}
+\titleformat{\subsubsection}{\small\bfseries\color{darkaccent}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{14pt}{5pt}
+\titlespacing*{\subsection}{0pt}{6pt}{4pt}
+\titlespacing*{\subsubsection}{0pt}{5pt}{2pt}
+\pagestyle{empty}
+\begin{document}
+$if(certification_logo_images)$
+\noindent
+\begin{minipage}[t]{0.80\linewidth}
+\centering
+{\fontsize{21}{23}\selectfont\bfseries\color{darkaccent} $name$}\\[-1pt]
+{\small\color{accent} $if(linkedin)$\href{$linkedin$}{$title$}$else$$title$$endif$}\\[-1pt]
+{\scriptsize $location$ \ | \ $phone$ \ | \ \href{mailto:$email$}{$email$} $if(linkedin)$\ | \ \href{$linkedin$}{LinkedIn}$endif$$if(website)$ \ | \ \href{$website$}{Website}$endif$$if(credly)$ \ | \ \href{$credly$}{Credly}$endif$}
+\end{minipage}
+\hfill\begin{minipage}[t]{0.18\linewidth}
+\raggedleft
+$for(certification_logo_images)$
+$if(certification_logo_images.image)$$if(credly)$\href{$credly$}{\includegraphics[width=0.8cm,height=0.8cm,keepaspectratio]{\detokenize{$certification_logo_images.image$}}}$else$\includegraphics[width=0.8cm,height=0.8cm,keepaspectratio]{\detokenize{$certification_logo_images.image$}}$endif$\hspace{2pt}$endif$
+$endfor$
+\end{minipage}
+$else$
+\begin{center}
+{\fontsize{21}{23}\selectfont\bfseries\color{darkaccent} $name$}\\[-1pt]
+{\small\color{accent} $if(linkedin)$\href{$linkedin$}{$title$}$else$$title$$endif$}\\[-1pt]
+{\scriptsize $location$ \ | \ $phone$ \ | \ \href{mailto:$email$}{$email$} $if(linkedin)$\ | \ \href{$linkedin$}{LinkedIn}$endif$$if(website)$ \ | \ \href{$website$}{Website}$endif$$if(credly)$ \ | \ \href{$credly$}{Credly}$endif$}
+\end{center}
+$endif$
+\par\vspace{-2pt}
+{\color{rule}\rule{\linewidth}{1.5pt}}
+$body$
+\end{document}

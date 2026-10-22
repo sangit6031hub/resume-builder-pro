@@ -1,0 +1,149 @@
+name: Build resume formats
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'resume.yaml'
+      - 'profiles/**'
+      - 'tools/**'
+      - 'templates/**'
+      - 'Makefile'
+      - '.github/workflows/build-resume.yml'
+  pull_request:
+    paths:
+      - 'resume.yaml'
+      - 'profiles/**'
+      - 'tools/**'
+      - 'templates/**'
+      - 'Makefile'
+      - '.github/workflows/build-resume.yml'
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Optional release version, for example v1.0.0. Leave blank to auto-increment the patch version."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: resume-builder
+  cancel-in-progress: false
+
+jobs:
+  resume-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Fetch all remote tags
+        run: git fetch --force --tags origin
+
+      - name: Set up Pandoc
+        uses: pandoc/actions/setup@v1
+        with:
+          version: 3.6.4
+
+      - name: Install PDF toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            texlive-xetex \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            fonts-texgyre
+
+      - name: Install Python deps
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install pyyaml
+
+      - name: Build Markdown and PDF variants
+        run: |
+          python3 tools/build_resumes.py \
+            --clean \
+            --output-dir generated-resumes
+
+      - name: Determine release version
+        id: version
+        if: github.event_name != 'pull_request'
+        env:
+          REQUESTED_VERSION: ${{ inputs.release_version }}
+        run: |
+          set -euo pipefail
+          if [[ -n "$REQUESTED_VERSION" ]]; then
+            RELEASE_VERSION="$REQUESTED_VERSION"
+            if [[ ! "$RELEASE_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "::error::release_version must match vMAJOR.MINOR.PATCH, for example v1.0.0"
+              exit 1
+            fi
+            if git rev-parse "$RELEASE_VERSION" >/dev/null 2>&1 ||
+              git ls-remote --exit-code --tags origin "refs/tags/$RELEASE_VERSION" >/dev/null 2>&1; then
+              echo "::error::Tag $RELEASE_VERSION already exists."
+              exit 1
+            fi
+          else
+            latest_tag=$(git tag --list 'v*.*.*' --sort=-version:refname | head -n 1)
+            if [[ "$latest_tag" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+              major="${BASH_REMATCH[1]}"
+              minor="${BASH_REMATCH[2]}"
+              patch=$((BASH_REMATCH[3] + 1))
+            else
+              major=1
+              minor=0
+              patch=0
+            fi
+            RELEASE_VERSION="v${major}.${minor}.${patch}"
+            while git rev-parse "$RELEASE_VERSION" >/dev/null 2>&1 ||
+              git ls-remote --exit-code --tags origin "refs/tags/$RELEASE_VERSION" >/dev/null 2>&1; do
+              patch=$((patch + 1))
+              RELEASE_VERSION="v${major}.${minor}.${patch}"
+            done
+          fi
+          echo "release_version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Publish GitHub Release
+        if: github.event_name != 'pull_request'
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.release_version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$RELEASE_VERSION" "$GITHUB_SHA" -m "Release $RELEASE_VERSION"
+          git push origin "$RELEASE_VERSION"
+          release_asset_dir="$(mktemp -d)"
+          mapfile -t generated_files < <(find generated-resumes -type f -name '*.pdf' | sort)
+          if [[ ${#generated_files[@]} -eq 0 ]]; then
+            echo "::error::No generated PDF files found under generated-resumes/"
+            exit 1
+          fi
+          release_assets=()
+          for generated_file in "${generated_files[@]}"; do
+            relative_path="${generated_file#generated-resumes/}"
+            asset_name="${relative_path//\//-}"
+            release_asset="$release_asset_dir/$asset_name"
+            cp -- "$generated_file" "$release_asset"
+            release_assets+=("$release_asset")
+          done
+          gh release create "$RELEASE_VERSION" \
+            "${release_assets[@]}" \
+            --target "$GITHUB_SHA" \
+            --title "Resume $RELEASE_VERSION" \
+            --generate-notes
+
+      - name: Upload resume artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-resume-formats
+          path: |
+            generated-resumes/**/*.pdf
+          if-no-files-found: error
+          retention-days: 30

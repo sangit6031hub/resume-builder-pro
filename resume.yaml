@@ -1,0 +1,30 @@
+template_dir: templates
+resumes:
+  - id: sample-dev
+    slug: alex-rivera
+    directory: profiles/sample-dev
+    name: Alex Rivera
+    title: Software Engineer | Cloud & Automation
+    location: Example City, California
+    phone: "+1 555 010 0142"
+    email: alex.rivera@example.com
+    linkedin: https://www.linkedin.com/in/alex-rivera-example/
+    website: https://example.com/alex-rivera
+    cv:
+      sections:
+        - profile.md
+        - experience.md
+        - skills.md
+        - education.md
+      templates_to_build: [01]
+    resume:
+      sections:
+        - profile.md
+        - experience-short.md
+        - skills.md
+        - education.md
+      templates_to_build: [01]
+    cover-letter:
+      sections:
+        - cover-letter.md
+      templates_to_build: [01]

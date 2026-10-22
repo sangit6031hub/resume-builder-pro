@@ -1,0 +1,20 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{fontspec}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{xcolor}
+\IfFontExistsTF{TeX Gyre Heros}{\setmainfont{TeX Gyre Heros}}{\IfFontExistsTF{Arial}{\setmainfont{Arial}}{\setmainfont{lmroman10-regular.otf}}}
+\definecolor{headingblue}{HTML}{183B56}
+\hypersetup{hidelinks,pdfcreator={},pdfproducer={}}
+\newcommand{\letterheader}{%
+\raggedright
+{\fontsize{16}{19}\selectfont\bfseries\color{headingblue} $name$}\\[2pt]
+{\normalsize\color{headingblue} $title$}\\[3pt]
+{\small $location$ \textbar\ $phone$ \textbar\ \href{mailto:$email$}{$email$}$if(linkedin)$ \textbar\ \href{$linkedin$}{$linkedin$}$endif$}
+\vspace{14pt}}
+\begin{document}
+\pagestyle{empty}
+\letterheader
+$body$
+\end{document}
